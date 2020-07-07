@@ -8,12 +8,26 @@ export default new Vuex.Store({
   state: {
     products: [],
     title_filter: [
-      'Product (100g serving)',
-      'Calories',
-      'Fat (g)',
-      'Carbs (g)',
-      'Protein (g)',
-      'Iron (%)'
+      {
+        id: 1,
+        name: 'Product (100g serving)'
+      },
+      {
+        id: 2,
+        name: 'Calories'
+      },
+      {
+        id: 3,
+        name: 'Fat (g)'
+      },
+      {
+        id: 4,
+        name: 'Protein (g)'
+      },
+      {
+        id: 5,
+        name: 'Iron (%)'
+      }
     ]
   },
   mutations: {

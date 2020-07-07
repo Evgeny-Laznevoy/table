@@ -1,6 +1,6 @@
 <template>
-    <div class="table__main" :id="`checkbox-id${row_key}`">
-        <input type="checkbox" :id="`checkbox-id${row_key}`">
+    <div class="table__main" :id="`checkbox-id${row_key.id}`">
+        <input type="checkbox" :id="`checkbox-id${row_key.id}`">
         <label :for="`checkbox-id${row_key}`"></label>
         <div class="product">{{row_data.product}}</div>
         <div class="product">{{row_data.calories}}</div>

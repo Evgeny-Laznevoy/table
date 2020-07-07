@@ -1,5 +1,5 @@
 <template>
-    <button class="button">{{this.title_button}}</button>
+    <button class="button">{{this.title_button.name}}</button>
 </template>
 
 <script>
@@ -12,10 +12,10 @@
         },
         props: {
             title_button: {
-                type: String,
-                default: () => {
-                    return 'Product(100g serving)'
-                }
+                type: Object
+                // default: () => {
+                //     return 'Product(100g serving)'
+                // }
             }
         },
     }
