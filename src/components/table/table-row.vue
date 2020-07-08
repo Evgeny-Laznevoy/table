@@ -1,6 +1,6 @@
 <template>
-    <div class="table__main" :id="`checkbox-id${row_key.id}`">
-        <input type="checkbox" :id="`checkbox-id${row_key.id}`">
+    <div class="table__main" :id="`checkbox-id${row_key}`">
+        <input type="checkbox" :id="`checkbox-id${row_key}`">
         <label :for="`checkbox-id${row_key}`"></label>
         <div class="product">{{row_data.product}}</div>
         <div class="product">{{row_data.calories}}</div>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import svgTrash from "../../assets/Trash.svg";
     export default {
         name: 'table-row',
         props:{
@@ -34,7 +35,7 @@
         },
         data() {
             return {
-                
+                svgTrash: svgTrash,
             }
         },
         computed:{

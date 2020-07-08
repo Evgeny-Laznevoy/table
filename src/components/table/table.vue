@@ -3,7 +3,7 @@
     <div class="table__header">
       <input type="checkbox" id="checkbox-id" />
       <label for="checkbox-id"></label>
-      <div
+      <!-- <div
         class="product"
         :id="title.id"
         v-for="title in TITLE_FILTER"
@@ -23,6 +23,27 @@
           alt="icon_arrow_down"
           :id="title.id"
         />
+      </div> -->
+      <div
+        class="product"
+        :id="item.id"
+        v-for="item in TITLE_FILTER"
+        :key="item.id"
+        @click.prevent="productSort(item.name)"
+      >
+        {{ item.title }}
+        <!-- <img
+          v-show="ArrowUpVisibe"
+          :src="`${svgArrowUp}`"
+          alt="icon_arrow_up"
+          :id="title.id"
+        />
+        <img
+          v-show="ArrowDownVisibe"
+          :src="`${svgArrowDown}`"
+          alt="icon_arrow_down"
+          :id="title.id"
+        /> -->
       </div>
       <button class="delete-all">
         <img :src="`${svgTrash}`" alt="icon_trash" />
@@ -32,10 +53,6 @@
       get rid of duplicates, implement in component
        -->
     </div>
-
-    <!-- <div class="table__main">
-
-        </div> -->
     <TableRow
       v-for="row in products_data"
       :key="`row${row.id}`"
@@ -71,22 +88,60 @@ export default {
       svgArrowDown: svgArrowDown,
       ArrowUpVisibe: false,
       ArrowDownVisibe: false,
+      sortBy: "name",
+      sortDirection: "ASC",
+      search: "",
     };
   },
   computed: {
     ...mapGetters(["TITLE_FILTER"]),
   },
   methods: {
-    productSort() {
-      if (!this.ArrowUpVisibe && !this.ArrowDownVisibe) {
-        this.ArrowUpVisibe = true;
-      } else if (this.ArrowUpVisibe) {
-        this.ArrowUpVisibe = false;
-        this.ArrowDownVisibe = true;
-      } else if (this.ArrowDownVisibe) {
-        this.ArrowUpVisibe = true;
-        this.ArrowDownVisibe = false;
-      }
+    productSort(by) {
+      console.log(by);
+      this.$store.dispatch('SORT_PRODUCTS_TO_STATE', by);
+      
+      // if ( by == this.sortBy ) {
+      //   if (this.sortDirection == 'ASC') {
+      //     this.sortDirection ='DESC';
+      //   } else {
+      //     this.sortDirection = 'ASC';
+      //   }       
+      // }
+
+      // if ( by != this.sortBy ) {
+      //   this.sortDirection = 'ASC';
+      //   this.sortBy = by;  
+      // }
+
+      // switch (this.sortBy) {
+      //   case 1:
+      //     this.sortProductsByName();
+      //   break;
+      //   case 2:
+      //     this.sortProductsByCalories();
+      //   break;
+      //   case 3:
+      //     this.sortProductsByFat();
+      //   break;
+      //   case 4:
+      //     this.sortProductsByCarbs();
+      //   break;
+      //   case 5:
+      //     this.sortProductsByIron();
+      //   break;
+      //   default:
+      //     break;
+      // }
+      // if (!this.ArrowUpVisibe && !this.ArrowDownVisibe) {
+      //   this.ArrowUpVisibe = true;
+      // } else if (this.ArrowUpVisibe) {
+      //   this.ArrowUpVisibe = false;
+      //   this.ArrowDownVisibe = true;
+      // } else if (this.ArrowDownVisibe) {
+      //   this.ArrowUpVisibe = true;
+      //   this.ArrowDownVisibe = false;
+      // }
     },
   },
 };

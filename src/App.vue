@@ -60,6 +60,9 @@ import svgLeft from './assets/Left.svg'
       Table,
       Button,
     },
+    // created(){
+    //     this.GET_PRODUCTS_FROM_API();
+    // },
     data() {
       return {
         logo: 'Table UI',
@@ -80,7 +83,7 @@ import svgLeft from './assets/Left.svg'
       ...mapActions(['GET_PRODUCTS_FROM_API'])
     },
     mounted(){
-      this.GET_PRODUCTS_FROM_API()
+      this.GET_PRODUCTS_FROM_API();
     }
   }
 </script>
