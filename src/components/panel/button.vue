@@ -1,5 +1,5 @@
 <template>
-    <button class="button">{{this.title_button.name}}</button>
+    <button class="button disabled" :class="{active:this.active}">{{this.title_button.title}}</button>
 </template>
 
 <script>
@@ -7,17 +7,18 @@
         name: 'button',
         data() {
             return {
-                title: ''
+                title: '',
+                // productActive: true,
             }
         },
         props: {
             title_button: {
                 type: Object
-                // default: () => {
-                //     return 'Product(100g serving)'
-                // }
+            },
+            active: {
+                type: Boolean
             }
-        },
+        }
     }
 </script>
 
@@ -25,17 +26,26 @@
 
     .button {
         width: auto;
-        background: #F2F2F2;
-        height: 32px;
-        font-size: 14px;
-        // border: 1px solid #C6CBD4;
-        border: none;
-        box-sizing: border-box;
-        padding: 5px;
-        background: #00A11E;
-        border-radius: 2px;
-        color: #FFFFFF;
-        margin-left: 4px;
+            background: #F2F2F2;
+            height: 32px;
+            font-size: 14px;
+            border: none;
+            box-sizing: border-box;
+            padding: 5px;
+            outline: none;
+            color: #000000;
+            margin-left: 4px;
+
+        &.active {
+            background: #00A11E;
+            border-radius: 2px;
+            border-color: none;
+            color: #ffffff;
+        }
+
+        &:disabled {
+            
+        }
     }
 
     .button:first-child{

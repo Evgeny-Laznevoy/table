@@ -13,6 +13,7 @@
               <Button v-for="(item, i) in TITLE_FILTER" 
                   :key="`title${i}`"
                   :title_button="item"
+                  :active="item.color"
               />
             </div>
         </div>

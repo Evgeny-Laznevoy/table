@@ -63,6 +63,16 @@ export default new Vuex.Store({
           }
         }.bind(state));    
       },
+      SET_COLOR_TITLE_FILTER(state, payload){
+        console.log(payload);
+        state.title_filter.forEach( function(item){
+          if (item.id == payload) {
+            item.color = true;
+          } else {
+            item.color = false;
+          }
+        })
+      },  
       SORT_BY_NUMBER(state, payload){
 
         switch (payload) {
@@ -117,15 +127,6 @@ export default new Vuex.Store({
           default:
             break;
         }
-        // state.products.sort( function(a, b){
-        //   if ( state.sortDirection == "ASC" ) {
-        //     return a.calories < b.calories ? 1 : -1;
-        //   }
-
-        //   if ( state.sortDirection == "DESC" ) {
-        //     return a.calories > b.calories ? 1 : -1;
-        //   }
-        // }.bind(state))
       },
   },
   actions: {
@@ -140,7 +141,6 @@ export default new Vuex.Store({
       })
     },
     SORT_PRODUCTS_TO_STATE({commit}, payload){
-      // console.log(payload);
       if ( payload == this.state.sortBy ) {
         if ( this.state.sortDirection == 'ASC' ) {
           this.state.sortDirection = 'DESC';
@@ -159,6 +159,9 @@ export default new Vuex.Store({
       } else {
         commit('SORT_BY_NUMBER', this.state.sortBy);
       }
+    },
+    EDIT_COLOR_TITLE_FILTER({commit}, payload){
+      commit('SET_COLOR_TITLE_FILTER', payload);
     }
   },
   getters:{

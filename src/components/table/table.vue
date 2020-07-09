@@ -29,7 +29,7 @@
         :id="item.id"
         v-for="item in TITLE_FILTER"
         :key="item.id"
-        @click.prevent="productSort(item.name)"
+        @click.prevent="productSort(item)"
       >
         {{ item.title }}
         <!-- <img
@@ -98,8 +98,8 @@ export default {
   },
   methods: {
     productSort(by) {
-      console.log(by);
-      this.$store.dispatch('SORT_PRODUCTS_TO_STATE', by);
+      this.$store.dispatch('SORT_PRODUCTS_TO_STATE', by.name);
+      this.$store.dispatch('EDIT_COLOR_TITLE_FILTER', by.id)
       
       // if ( by == this.sortBy ) {
       //   if (this.sortDirection == 'ASC') {
