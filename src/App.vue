@@ -20,28 +20,28 @@
         <div class="navigation">
             <Button :title_button="`Delete `+`(${1})`"/>
             <button class="perpage">
-              {{this.namberPage}} Per Page
+              {{this.productsPerPage}} Per Page
               <img :src="`${svgDown}`" alt=""/>
             </button>
             <div class="pagination">
-              <button class="btn">
+              <button class="btn" @click.prevent="paginationLeft()">
                 <img :src="`${svgLeft}`" alt="Pagination left"/>
               </button>
               <div class="pagination__info">
-                {{this.pagination}}
+                {{`${this.from}-${this.to} of ${this.PRODUCTS.length}`}}
               </div>
-              <button class="btn">
+              <button class="btn" @click.prevent="paginationRight()">
                 <img :src="`${svgRight}`" alt="Pagination right"/>
               </button>
             </div>
             <button class="perpage">
-              {{this.namberPage}} columns selected
+              {{this.pageNumber}} columns selected
               <img :src="`${svgDown}`" alt=""/>
             </button>
         </div>
       </div>
     </div>  
-    <Table :products_data="PRODUCTS" />
+    <Table :products_data="paginatedProducts" />
     <router-view/>  
   </div>
 </template>
@@ -67,24 +67,46 @@ import svgLeft from './assets/Left.svg'
     data() {
       return {
         logo: 'Table UI',
-        namberPage: 1,
         svgDown: svgDown,
         svgRight: svgRight,
         svgLeft: svgLeft,
-        pagination: '1-10 of 25'
+        pagination: '1-10 of 25',
+        productsPerPage: 10,
+        pageNumber: 1,
+        from: 0,
+        to: 0
       }
     },
     computed:{
       ...mapGetters([
         'PRODUCTS',
         'TITLE_FILTER'
-        ])
+        ]),
+        pages(){
+          return Math.ceil(this.PRODUCTS.length / 10);
+        },
+        paginatedProducts(){
+          let from = (this.pageNumber -1) * this.productsPerPage;
+          let to = from + this.productsPerPage;
+          return this.PRODUCTS.slice(from, to);
+        }
     },
     methods:{
-      ...mapActions(['GET_PRODUCTS_FROM_API'])
+      ...mapActions(['GET_PRODUCTS_FROM_API']),
+      paginationRight(){
+          this.pageNumber == this.pages ? this.pageNumber : this.pageNumber += 1;
+      },
+      paginationLeft(){
+          this.pageNumber > 1 ? this.pageNumber -= 1 : this.pageNumber;
+      },
+      getRangeString(){
+        this.to = this.pageNumber + (this.productsPerPage - 1);
+        this.from = this.from + this.productsPerPage;
+      }
     },
     mounted(){
       this.GET_PRODUCTS_FROM_API();
+      this.getRangeString();
     }
   }
 </script>

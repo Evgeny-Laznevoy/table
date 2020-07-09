@@ -99,7 +99,7 @@ export default {
   methods: {
     productSort(by) {
       this.$store.dispatch('SORT_PRODUCTS_TO_STATE', by.name);
-      this.$store.dispatch('EDIT_COLOR_TITLE_FILTER', by.id)
+      this.$store.dispatch('EDIT_COLOR_TITLE_FILTER', by.id);
       
       // if ( by == this.sortBy ) {
       //   if (this.sortDirection == 'ASC') {
