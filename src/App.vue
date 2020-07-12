@@ -19,10 +19,27 @@
         </div>
         <div class="navigation">
             <Button :title_button="`Delete `+`(${1})`"/>
-            <button class="perpage">
-              {{this.productsPerPage}} Per Page
-              <img :src="`${svgDown}`" alt=""/>
-            </button>
+            <div class="prepage-dropdown-filters-block">
+              <Select :options="optionsPrePage" @selectedOptions="selectedOptions"/>
+              <!-- <button class="prepage-dropdown-filters-block__btn">
+                {{this.productsPerPage}} Per Page
+                <img :src="`${svgDown}`" alt=""/>
+              </button> -->
+              <!-- <div class="prepage-dropdown-filters-block__popup"> -->
+                  <!-- <div class="prepage-type">
+                    <input type="checkbox">
+                    10 Per Page
+                    </div>
+                  <div class="prepage-type">
+                    <input type="checkbox">
+                    15 Per Page
+                  </div>
+                  <div class="prepage-type">
+                    <input type="checkbox">
+                    20 Per Page
+                  </div> -->
+              <!-- </div> -->
+            </div>
             <div class="pagination">
               <button class="btn" @click.prevent="paginationLeft()">
                 <img :src="`${svgLeft}`" alt="Pagination left"/>
@@ -51,7 +68,8 @@
 import { mapActions, mapGetters } from 'vuex'
 import Table from './components/table/table'
 import Button from './components/panel/button'
-import svgDown from './assets/Down.svg'
+import Select from './components/select'
+// import svgDown from './assets/Down.svg'
 import svgRight from './assets/Right.svg'
 import svgLeft from './assets/Left.svg'
 
@@ -60,6 +78,7 @@ import svgLeft from './assets/Left.svg'
     components: {
       Table,
       Button,
+      Select
     },
     // created(){
     //     this.GET_PRODUCTS_FROM_API();
@@ -67,14 +86,19 @@ import svgLeft from './assets/Left.svg'
     data() {
       return {
         logo: 'Table UI',
-        svgDown: svgDown,
+        // svgDown: svgDown,
         svgRight: svgRight,
         svgLeft: svgLeft,
         pagination: '1-10 of 25',
         productsPerPage: 10,
         pageNumber: 1,
         from: 0,
-        to: 0
+        to: 0,
+        optionsPrePage: [
+          {name: '10 Per Page', value: 10},
+          {name: '15 Per Page', value: 15},
+          {name: '20 Per Page', value: 20},
+        ]
       }
     },
     computed:{
@@ -102,6 +126,9 @@ import svgLeft from './assets/Left.svg'
       getRangeString(){
         this.to = this.pageNumber + (this.productsPerPage - 1);
         this.from = this.from + this.productsPerPage;
+      },
+      selectedOptions(option){
+          this.productsPerPage = option;
       }
     },
     mounted(){
@@ -184,17 +211,47 @@ import svgLeft from './assets/Left.svg'
         width: 50%;
         display: flex;
         justify-content: flex-end;
-        .perpage {
-          display: flex;
-          align-items: center;
-          width: auto;
-          height: 32px;
-          border: 1px solid #D5DAE0;
-          box-sizing: border-box;
-          border-radius: 2px;
-          margin-left: 12px;
-          padding-left: 12px;
+
+        .prepage-dropdown-filters-block {
+
+            &__btn {
+                display: flex;
+                position: relative;
+                align-items: center;
+                width: auto;
+                height: 32px;
+                border: 1px solid #D5DAE0;
+                box-sizing: border-box;
+                border-radius: 2px;
+                margin-left: 12px;
+                padding-left: 12px;
+            }
+
+            &__popup {
+                display: block;
+                width: auto;
+                background-color: #ffffff;
+                position: absolute;
+                margin-top: 10px;
+                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
+                border-radius: 4px;
+                margin-left: 12px;
+                padding: 0px 20px 12px 20px;
+                font-size: 14px;
+
+                .prepage-type {
+                  margin-top: 12px;
+                  background-color: #ffffff;
+                  display: flex;
+                  align-items: center;
+
+                  input {
+                    margin-right: 12px;
+                  }
+                }
+            }
         }
+        
 
         .pagination {
             display: flex;

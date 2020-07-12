@@ -214,6 +214,7 @@ export default {
       width: auto;
       text-align: left;
       align-items: center;
+      cursor: pointer;
       // vertical-align: middle;
       // justify-content: center;
       // img {

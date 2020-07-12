@@ -52,7 +52,7 @@ import svgTrash from "../../assets/Trash.svg";
             // justify-content: space-between;
             align-items: center;
             font-size: 14px;
-            height: 57px;
+            height: 56px;
 
             input {
                 display: none;
