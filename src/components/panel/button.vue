@@ -1,5 +1,7 @@
 <template>
-    <button class="button disabled" :class="{active:this.active}">{{this.title_button.title}}</button>
+    <button class="button disabled" :class="{active:this.active}">
+        {{this.title_button.title}}
+    </button>
 </template>
 
 <script>

@@ -53,6 +53,18 @@ import svgTrash from "../../assets/Trash.svg";
             align-items: center;
             font-size: 14px;
             height: 56px;
+            // background: #F8F9FA;
+            // &:nth-child(even) {
+            //     background: #F8F9FA;
+            // }
+
+            // &:hover {
+            //     background: rgba(0, 161, 30, 0.07);
+
+            //     label {
+            //         background: rgba(0, 161, 30, 0.07);
+            //     }
+            // }
 
             input {
                 display: none;
@@ -76,6 +88,7 @@ import svgTrash from "../../assets/Trash.svg";
                 font-weight: normal;
                 padding: 10px 0;
                 vertical-align: middle;
+                // background: #F8F9FA;
             }
 
             label::before {
@@ -98,6 +111,8 @@ import svgTrash from "../../assets/Trash.svg";
                 margin-right: 10px;
                 width: 190px;
                 text-align: left;
+                display: block;
+                // background: #F8F9FA;
             }
 
             .product:last-child {
@@ -111,9 +126,12 @@ import svgTrash from "../../assets/Trash.svg";
                 border: none;
                 font-size: 14px;
                 padding: 0 10px;
+                // background: #F8F9FA;
                 img {
                     width: 32px;
+                    // background: #F8F9FA;
                 }
+
             }    
     }
 

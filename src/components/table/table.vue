@@ -25,6 +25,7 @@
         />
       </div> -->
       <div
+        :class="{active: sortBy == item.name}"
         class="product"
         :id="item.id"
         v-for="item in TITLE_FILTER"
@@ -32,6 +33,7 @@
         @click.prevent="productSort(item)"
       >
         {{ item.title }}
+        <img v-if="sortBy == item.name" :src="`${sortDirection == sortUp ? svgArrowUp : svgArrowDown}`" alt="select drop down"/>
         <!-- <img
           v-show="ArrowUpVisibe"
           :src="`${svgArrowUp}`"
@@ -53,11 +55,13 @@
       get rid of duplicates, implement in component
        -->
     </div>
-    <TableRow
-      v-for="row in products_data"
-      :key="`row${row.id}`"
-      :row_data="row"
-    />
+    <div class="table__row">
+        <TableRow
+          v-for="row in products_data"
+          :key="`row${row.id}`"
+          :row_data="row"
+        />
+    </div>
   </div>
 </template>
 
@@ -89,8 +93,10 @@ export default {
       ArrowUpVisibe: false,
       ArrowDownVisibe: false,
       sortBy: "name",
-      sortDirection: "ASC",
+      sortDirection: " ",
       search: "",
+      sortUp: "ASC",
+      sortDown: 'DESC'
     };
   },
   computed: {
@@ -98,59 +104,37 @@ export default {
   },
   methods: {
     productSort(by) {
+
+      if ( by.name != this.sortBy ) {
+        this.sortDirection = 'ASC';
+        this.sortBy = by.name;  
+      }
+
+      if (by.name == this.sortBy) {
+        if (this.sortDirection == this.sortUp) {
+          this.sortDirection = this.sortDown;
+        } else {
+          this.sortDirection = this.sortUp
+        }    
+      }
+      
       this.$store.dispatch('SORT_PRODUCTS_TO_STATE', by.name);
       this.$store.dispatch('EDIT_COLOR_TITLE_FILTER', by.id);
-      
-      // if ( by == this.sortBy ) {
-      //   if (this.sortDirection == 'ASC') {
-      //     this.sortDirection ='DESC';
-      //   } else {
-      //     this.sortDirection = 'ASC';
-      //   }       
-      // }
-
-      // if ( by != this.sortBy ) {
-      //   this.sortDirection = 'ASC';
-      //   this.sortBy = by;  
-      // }
-
-      // switch (this.sortBy) {
-      //   case 1:
-      //     this.sortProductsByName();
-      //   break;
-      //   case 2:
-      //     this.sortProductsByCalories();
-      //   break;
-      //   case 3:
-      //     this.sortProductsByFat();
-      //   break;
-      //   case 4:
-      //     this.sortProductsByCarbs();
-      //   break;
-      //   case 5:
-      //     this.sortProductsByIron();
-      //   break;
-      //   default:
-      //     break;
-      // }
-      // if (!this.ArrowUpVisibe && !this.ArrowDownVisibe) {
-      //   this.ArrowUpVisibe = true;
-      // } else if (this.ArrowUpVisibe) {
-      //   this.ArrowUpVisibe = false;
-      //   this.ArrowDownVisibe = true;
-      // } else if (this.ArrowDownVisibe) {
-      //   this.ArrowUpVisibe = true;
-      //   this.ArrowDownVisibe = false;
-      // }
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+
 .table {
-  background: #ffffff;
+  // background: #ffffff;
   border-bottom: solid 2px #ededed;
+
+  &__row {
+    background: #1269c0;
+  }
+
   &__header {
     display: flex;
     text-align: center;
@@ -215,6 +199,16 @@ export default {
       text-align: left;
       align-items: center;
       cursor: pointer;
+
+      &.active {
+        display: flex;
+        margin-right: 10px;
+        width: auto;
+        text-align: left;
+        align-items: center;
+        cursor: pointer;
+        color: #00a11e;
+      }
       // vertical-align: middle;
       // justify-content: center;
       // img {

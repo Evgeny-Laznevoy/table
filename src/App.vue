@@ -2,31 +2,35 @@
   <div class="app">
     <div class="header">
       <div class="header__logo">
-        {{this.logo}}
+        {{ this.logo }}
       </div>
       <div class="header__panel">
         <div class="filter">
-            <h1 class="filter__title">
-              Sorting by:
-            </h1>
-            <div class="filter__button">
-              <Button v-for="(item, i) in TITLE_FILTER" 
-                  :key="`title${i}`"
-                  :title_button="item"
-                  :active="item.color"
-              />
-            </div>
+          <h1 class="filter__title">
+            Sorting by:
+          </h1>
+          <div class="filter__button">
+            <Button
+              v-for="(item, i) in TITLE_FILTER"
+              :key="`title${i}`"
+              :title_button="item"
+              :active="item.color"
+            />
+          </div>
         </div>
         <div class="navigation">
-            <Button :title_button="`Delete `+`(${1})`"/>
-            <div class="prepage-dropdown-filters-block">
-              <Select :options="optionsPrePage" @selectedOptions="selectedOptions"/>
-              <!-- <button class="prepage-dropdown-filters-block__btn">
+          <Button :title_button="`Delete ` + `(${1})`" />
+          <div class="prepage-dropdown-filters-block">
+            <Select
+              :options="optionsPrePage"
+              @selectedOptions="selectedOptions"
+            />
+            <!-- <button class="prepage-dropdown-filters-block__btn">
                 {{this.productsPerPage}} Per Page
                 <img :src="`${svgDown}`" alt=""/>
               </button> -->
-              <!-- <div class="prepage-dropdown-filters-block__popup"> -->
-                  <!-- <div class="prepage-type">
+            <!-- <div class="prepage-dropdown-filters-block__popup"> -->
+            <!-- <div class="prepage-type">
                     <input type="checkbox">
                     10 Per Page
                     </div>
@@ -38,117 +42,114 @@
                     <input type="checkbox">
                     20 Per Page
                   </div> -->
-              <!-- </div> -->
-            </div>
-            <div class="pagination">
-              <button class="btn" @click.prevent="paginationLeft()">
-                <img :src="`${svgLeft}`" alt="Pagination left"/>
-              </button>
-              <div class="pagination__info">
-                {{`${this.from}-${this.to} of ${this.PRODUCTS.length}`}}
-              </div>
-              <button class="btn" @click.prevent="paginationRight()">
-                <img :src="`${svgRight}`" alt="Pagination right"/>
-              </button>
-            </div>
-            <button class="perpage">
-              {{this.pageNumber}} columns selected
-              <img :src="`${svgDown}`" alt=""/>
+            <!-- </div> -->
+          </div>
+          <div class="pagination">
+            <button class="btn" @click.prevent="paginationLeft()">
+              <img :src="`${svgLeft}`" alt="Pagination left" />
             </button>
+            <div class="pagination__info">
+              {{ `${this.from}-${this.to} of ${this.PRODUCTS.length}` }}
+            </div>
+            <button class="btn" @click.prevent="paginationRight()">
+              <img :src="`${svgRight}`" alt="Pagination right" />
+            </button>
+          </div>
+          <div class="column-select">    
+            <div class="column-dropdown-filters-blok">
+              {{ this.pageNumber }} columns selected
+              <img :src="`${svgDown}`" alt="" />
+            </div>
+          </div>
         </div>
       </div>
-    </div>  
+    </div>
     <Table :products_data="paginatedProducts" />
-    <router-view/>  
+    <router-view />
   </div>
 </template>
 
-
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import Table from './components/table/table'
-import Button from './components/panel/button'
-import Select from './components/select'
-// import svgDown from './assets/Down.svg'
-import svgRight from './assets/Right.svg'
-import svgLeft from './assets/Left.svg'
+import { mapActions, mapGetters } from "vuex";
+import Table from "./components/table/table";
+import Button from "./components/panel/button";
+import svgDown from './assets/Down.svg'
+import Select from "./components/select";
+import svgRight from "./assets/Right.svg";
+import svgLeft from "./assets/Left.svg";
 
-  export default {
-    name: 'app',
-    components: {
-      Table,
-      Button,
-      Select
+export default {
+  name: "app",
+  components: {
+    Table,
+    Button,
+    Select,
+  },
+  // created(){
+  //     this.GET_PRODUCTS_FROM_API();
+  // },
+  data() {
+    return {
+      logo: "Table UI",
+      svgRight: svgRight,
+      svgLeft: svgLeft,
+      svgDown: svgDown,
+      // pagination: "1-10 of 25",
+      productsPerPage: 10,
+      pageNumber: 1,
+      from: 0,
+      to: 0,
+      optionsPrePage: [
+        { name: "10 Per Page", value: 10 },
+        { name: "15 Per Page", value: 15 },
+        { name: "20 Per Page", value: 20 },
+      ],
+    };
+  },
+  computed: {
+    ...mapGetters(["PRODUCTS", "TITLE_FILTER"]),
+    pages() {
+      return Math.ceil(this.PRODUCTS.length / 10);
     },
-    // created(){
-    //     this.GET_PRODUCTS_FROM_API();
-    // },
-    data() {
-      return {
-        logo: 'Table UI',
-        // svgDown: svgDown,
-        svgRight: svgRight,
-        svgLeft: svgLeft,
-        pagination: '1-10 of 25',
-        productsPerPage: 10,
-        pageNumber: 1,
-        from: 0,
-        to: 0,
-        optionsPrePage: [
-          {name: '10 Per Page', value: 10},
-          {name: '15 Per Page', value: 15},
-          {name: '20 Per Page', value: 20},
-        ]
-      }
+    paginatedProducts() {
+      let from = (this.pageNumber - 1) * this.productsPerPage;
+      let to = from + this.productsPerPage;
+      return this.PRODUCTS.slice(from, to);
     },
-    computed:{
-      ...mapGetters([
-        'PRODUCTS',
-        'TITLE_FILTER'
-        ]),
-        pages(){
-          return Math.ceil(this.PRODUCTS.length / 10);
-        },
-        paginatedProducts(){
-          let from = (this.pageNumber -1) * this.productsPerPage;
-          let to = from + this.productsPerPage;
-          return this.PRODUCTS.slice(from, to);
-        }
+  },
+  methods: {
+    ...mapActions(["GET_PRODUCTS_FROM_API"]),
+    paginationRight() {
+      this.pageNumber == this.pages ? this.pageNumber : (this.pageNumber += 1);
     },
-    methods:{
-      ...mapActions(['GET_PRODUCTS_FROM_API']),
-      paginationRight(){
-          this.pageNumber == this.pages ? this.pageNumber : this.pageNumber += 1;
-      },
-      paginationLeft(){
-          this.pageNumber > 1 ? this.pageNumber -= 1 : this.pageNumber;
-      },
-      getRangeString(){
-        this.to = this.pageNumber + (this.productsPerPage - 1);
-        this.from = this.from + this.productsPerPage;
-      },
-      selectedOptions(option){
-          this.productsPerPage = option;
-      }
+    paginationLeft() {
+      this.pageNumber > 1 ? (this.pageNumber -= 1) : this.pageNumber;
     },
-    mounted(){
-      this.GET_PRODUCTS_FROM_API();
-      this.getRangeString();
-    }
-  }
+    getRangeString() {
+      this.to = this.pageNumber + (this.productsPerPage - 1);
+      this.from = this.from + this.productsPerPage;
+    },
+    selectedOptions(option) {
+      this.productsPerPage = option;
+    },
+  },
+  mounted() {
+    this.GET_PRODUCTS_FROM_API();
+    this.getRangeString();
+  },
+};
 </script>
 
 <style lang="scss">
-
-*{
+* {
   margin: 0;
   padding: 0;
-  background: #F2F2F2;
+  background: #f2f2f2;
 }
 
-.body{
-    // margin: 0 auto;
-    // padding: 0;
+.body {
+  // margin: 0 auto;
+  // padding: 0;
 }
 
 .app {
@@ -162,9 +163,8 @@ import svgLeft from './assets/Left.svg'
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background: #F2F2F2;
+  background: #f2f2f2;
 }
-
 
 .header {
   display: flex;
@@ -173,115 +173,138 @@ import svgLeft from './assets/Left.svg'
   // text-align: left;
   // justify-content: left;
   // height: 40px;
-  // width: 112px; 
-    &__logo {
+  // width: 112px;
+  &__logo {
     margin-top: 30px;
     padding-bottom: 15px;
     font-size: 32px;
     line-height: 40px;
     font-weight: 600;
-    border-bottom: solid 2px  #EDEDED;
+    border-bottom: solid 2px #ededed;
+  }
+
+  &__panel {
+    width: 100%;
+    padding: 20px 0;
+    display: inline-flex;
+
+    .filter {
+      width: 50%;
+      display: flex;
+      align-items: center;
+
+      &__title {
+        // font-family: Source Sans Pro;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 24px;
+        text-align: left;
+      }
+
+      &__button {
+        // margin-left: 8px;
+      }
     }
 
-    &__panel {
-      width: 100%;
-      padding: 20px 0;
-      display: inline-flex;
+    .navigation {
+      width: 50%;
+      display: flex;
+      justify-content: flex-end;
 
-      .filter {
-        width: 50%;
+      .prepage-dropdown-filters-block {
+        //     &__btn {
+        //         display: flex;
+        //         position: relative;
+        //         align-items: center;
+        //         width: auto;
+        //         height: 32px;
+        //         border: 1px solid #D5DAE0;
+        //         box-sizing: border-box;
+        //         border-radius: 2px;
+        //         margin-left: 12px;
+        //         padding-left: 12px;
+        //     }
+
+        //     &__popup {
+        //         display: block;
+        //         width: auto;
+        //         background-color: #ffffff;
+        //         position: absolute;
+        //         margin-top: 10px;
+        //         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
+        //         border-radius: 4px;
+        //         margin-left: 12px;
+        //         padding: 0px 20px 12px 20px;
+        //         font-size: 14px;
+
+        //         .prepage-type {
+        //           margin-top: 12px;
+        //           background-color: #ffffff;
+        //           display: flex;
+        //           align-items: center;
+
+        //           input {
+        //             margin-right: 12px;
+        //           }
+        //         }
+        //     }
+      }
+
+      .column-dropdown-filters-blok {
         display: flex;
+        position: relative;
         align-items: center;
+        height: 32px;
+        border: 1px solid #d5dae0;
+        box-sizing: border-box;
+        border-radius: 2px;
+        padding-left: 12px;
+        cursor: pointer;
+        font-size: 14px;
 
-        &__title {
-          // font-family: Source Sans Pro;
-          font-style: normal;
+        &:hover {
+          img {
+            background: #cecece;
+          }
+          background: #cecece;
+        }
+      }
+
+      .pagination {
+        display: flex;
+        margin: 0 16px;
+
+        .btn {
+          width: 32px;
+          height: 32px;
+          border: 1px solid #d5dae0;
+          box-sizing: border-box;
+          border-radius: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+
+          &:hover {
+            img {
+              background: #cecece;
+            }
+            background: #cecece;
+          }
+        }
+
+        &__info {
+          margin: 0 8px;
+          display: flex;
+          align-items: center;
           font-weight: 600;
           font-size: 14px;
-          line-height: 24px;
-          text-align: left;
-        }
-
-        &__button {
-          // margin-left: 8px;
         }
       }
-
-      .navigation {
-        width: 50%;
-        display: flex;
-        justify-content: flex-end;
-
-        .prepage-dropdown-filters-block {
-
-            &__btn {
-                display: flex;
-                position: relative;
-                align-items: center;
-                width: auto;
-                height: 32px;
-                border: 1px solid #D5DAE0;
-                box-sizing: border-box;
-                border-radius: 2px;
-                margin-left: 12px;
-                padding-left: 12px;
-            }
-
-            &__popup {
-                display: block;
-                width: auto;
-                background-color: #ffffff;
-                position: absolute;
-                margin-top: 10px;
-                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
-                border-radius: 4px;
-                margin-left: 12px;
-                padding: 0px 20px 12px 20px;
-                font-size: 14px;
-
-                .prepage-type {
-                  margin-top: 12px;
-                  background-color: #ffffff;
-                  display: flex;
-                  align-items: center;
-
-                  input {
-                    margin-right: 12px;
-                  }
-                }
-            }
-        }
-        
-
-        .pagination {
-            display: flex;
-            margin: 0 16px;
-
-            .btn {
-                width: 32px;
-                height: 32px;
-                border: 1px solid #D5DAE0;
-                box-sizing: border-box;
-                border-radius: 2px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            &__info {
-              margin: 0 8px;
-              display: flex;
-              align-items: center;
-              font-weight: 600;
-              font-size: 14px;
-            }
-        }
-      }
-
     }
-
+  }
 }
-
 
 #nav {
   padding: 30px;

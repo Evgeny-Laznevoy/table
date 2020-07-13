@@ -61,6 +61,13 @@ import svgDown from '../assets/Down.svg'
         cursor: pointer;
         font-size: 14px;
 
+        &:hover {
+            img {
+                background: #cecece;
+            }
+            background: #cecece;
+        }
+
         &__options {
             display: block;
             width: 116px;
@@ -79,7 +86,7 @@ import svgDown from '../assets/Down.svg'
                 cursor: pointer;
 
                 &:hover {
-                    background-color: #d3d3d3;
+                    background-color: #cecece;
                 }
             }  
         }
