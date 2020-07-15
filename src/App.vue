@@ -55,25 +55,61 @@
               <img :src="`${svgRight}`" alt="Pagination right" />
             </button>
           </div>
-          <div class="column-select">    
-            <div class="column-dropdown-filters-blok">
+          <div class="column-select">
+            <div class="column-dropdown-filters-blok" @click.prevent="visOptionsColumn = !visOptionsColumn">
               {{ this.pageNumber }} columns selected
               <img :src="`${svgDown}`" alt="" />
+            </div>
+            <div class="column-filters" v-show="visOptionsColumn">
+              <div class="column-filters__options">
+                <div class="column-filters__option">
+                  <input type="checkbox" />
+                  Select All
+                </div>
+                <div class="column-filters__option"
+                  v-for="(item, i) in TITLE_FILTER"
+                  :key="`title${i}`"
+                >
+                  <input type="checkbox" @click.prevent="selectedColumn(item.name)"/>
+                  {{item.title}}
+                </div>
+                <!-- <div class="column-filters__option">
+                  <input type="checkbox" />
+                  Select All
+                </div>
+                <div class="column-filters__option">
+                  <input type="checkbox" />
+                  Select All
+                </div>
+                <div class="column-filters__option">
+                  <input type="checkbox" />
+                  Select All
+                </div>
+                <div class="column-filters__option">
+                  <input type="checkbox" />
+                  Select All
+                </div>
+                <div class="column-filters__option">
+                  <input type="checkbox" />
+                  Select All
+                </div> -->
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <Table :products_data="paginatedProducts" />
+    <Table2 :products_data="paginatedProducts" />
     <router-view />
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import Table from "./components/table/table";
+// import Table from "./components/table/table";
+import Table2 from "./components/table/table2";
 import Button from "./components/panel/button";
-import svgDown from './assets/Down.svg'
+import svgDown from "./assets/Down.svg";
 import Select from "./components/select";
 import svgRight from "./assets/Right.svg";
 import svgLeft from "./assets/Left.svg";
@@ -81,7 +117,7 @@ import svgLeft from "./assets/Left.svg";
 export default {
   name: "app",
   components: {
-    Table,
+    Table2,
     Button,
     Select,
   },
@@ -99,6 +135,7 @@ export default {
       pageNumber: 1,
       from: 0,
       to: 0,
+      visOptionsColumn: false,
       optionsPrePage: [
         { name: "10 Per Page", value: 10 },
         { name: "15 Per Page", value: 15 },
@@ -132,6 +169,9 @@ export default {
     selectedOptions(option) {
       this.productsPerPage = option;
     },
+    selectedColumn(id) {
+      this.$store.dispatch('SET_VISIBILITY_COLUMNS', id);
+    }
   },
   mounted() {
     this.GET_PRODUCTS_FROM_API();
@@ -251,23 +291,79 @@ export default {
         //     }
       }
 
-      .column-dropdown-filters-blok {
-        display: flex;
-        position: relative;
-        align-items: center;
-        height: 32px;
-        border: 1px solid #d5dae0;
-        box-sizing: border-box;
-        border-radius: 2px;
-        padding-left: 12px;
-        cursor: pointer;
-        font-size: 14px;
+      .column-select {
+        .column-dropdown-filters-blok {
+          display: flex;
+          position: relative;
+          align-items: center;
+          height: 32px;
+          border: 1px solid #d5dae0;
+          box-sizing: border-box;
+          border-radius: 2px;
+          padding-left: 12px;
+          cursor: pointer;
+          font-size: 14px;
 
-        &:hover {
-          img {
+          &:hover {
+            img {
+              background: #cecece;
+            }
             background: #cecece;
           }
-          background: #cecece;
+        }
+
+        .column-filters {
+          display: block;
+          position: absolute;
+          width: 210px;
+          height: 250px;
+          margin-top: 14px;
+          background: #ffffff;
+          box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
+          border-radius: 4px;
+
+          &__options {
+            display: block;
+            overflow: auto;
+            height: 250px;
+            margin: 0px 12px 0 16px;
+            background: #ffffff;
+
+            &::-webkit-scrollbar {
+              width: 4px;
+            }
+
+            &::-webkit-scrollbar-track {
+              background: #ffffff;
+              margin-top: 16px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background: #d5dae0;
+              border-radius: 6px;
+              // height: 100px;
+            }
+          }
+
+          &__option {
+            display: flex;
+            background: #ffffff;
+            margin-top: 16px;
+            height: 24px;
+            // padding-left: 17px;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 24px;
+            align-items: center;
+
+            &:first-child {
+              font-weight: 600;
+            }
+            input {
+              margin-right: 13px;
+            }
+          }
         }
       }
 

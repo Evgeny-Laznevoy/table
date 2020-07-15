@@ -12,37 +12,43 @@ export default new Vuex.Store({
         id: 1,
         name: "product",
         title: 'Product (100g serving)',
-        color: false
+        color: false,
+        visibility: true
       },
       {
         id: 2,
         name: "calories",
         title: 'Calories',
-        color: false
+        color: false,
+        visibility: true
       },
       {
         id: 3,
         name: "fat",
         title: 'Fat (g)',
-        color: false
+        color: false,
+        visibility: true
       },
       {
         id: 4,
         name: "carbs",
         title: 'Carbs (g)',
-        color: false
+        color: false,
+        visibility: true
       },
       {
         id: 5,
         name: "protein",
         title: 'Protein (%)',
-        color: false
+        color: false,
+        visibility: true
       },
       {
         id: 6,
         name: "iron",
         title: 'Iron (%)',
-        color: false
+        color: false,
+        visibility: true
       }
     ],
     sortBy: "name",
@@ -51,6 +57,9 @@ export default new Vuex.Store({
   mutations: {
       SET_PRODUCTS_TO_STATE(state, products){
         state.products = products
+      },
+      EDIT_VISIBILITY_COLUMNS(state, payload){
+        state.title_filter.find(item => item.name == payload ? item.visibility = !item.visibility : item.visibility)
       },
       SORT_PRODUCTS(state){
         state.products.sort( function(a, b) {
@@ -64,7 +73,6 @@ export default new Vuex.Store({
         }.bind(state));    
       },
       SET_COLOR_TITLE_FILTER(state, payload){
-        console.log(payload);
         state.title_filter.forEach( function(item){
           if (item.id == payload) {
             item.color = true;
@@ -162,6 +170,9 @@ export default new Vuex.Store({
     },
     EDIT_COLOR_TITLE_FILTER({commit}, payload){
       commit('SET_COLOR_TITLE_FILTER', payload);
+    },
+    SET_VISIBILITY_COLUMNS({commit}, payload) {
+      commit('EDIT_VISIBILITY_COLUMNS', payload)
     }
   },
   getters:{

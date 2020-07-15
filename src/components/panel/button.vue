@@ -45,9 +45,9 @@
             color: #ffffff;
         }
 
-        &:disabled {
+        // &:disabled {
             
-        }
+        // }
     }
 
     .button:first-child{

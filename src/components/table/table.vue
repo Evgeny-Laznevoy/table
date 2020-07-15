@@ -31,6 +31,7 @@
         v-for="item in TITLE_FILTER"
         :key="item.id"
         @click.prevent="productSort(item)"
+        v-show="item.visibility"
       >
         {{ item.title }}
         <img v-if="sortBy == item.name" :src="`${sortDirection == sortUp ? svgArrowUp : svgArrowDown}`" alt="select drop down"/>

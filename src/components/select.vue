@@ -67,7 +67,9 @@ import svgDown from '../assets/Down.svg'
             }
             background: #cecece;
         }
-
+        &__options {
+            background-color: #F2F2F2;
+        }
         &__options {
             display: block;
             width: 116px;

@@ -2,12 +2,12 @@
     <div class="table__main" :id="`checkbox-id${row_key}`">
         <input type="checkbox" :id="`checkbox-id${row_key}`">
         <label :for="`checkbox-id${row_key}`"></label>
-        <div class="product">{{row_data.product}}</div>
-        <div class="product">{{row_data.calories}}</div>
-        <div class="product">{{row_data.fat}}</div>
-        <div class="product">{{row_data.carbs}}</div>
-        <div class="product">{{row_data.protein}}</div>
-        <div class="product">{{row_data.iron}}</div>
+            <div class="product" v-show="visProduct">{{row_data.product}}</div>
+            <div class="product" v-show="visCalories">{{row_data.calories}}</div>
+            <div class="product" v-show="visFat">{{row_data.fat}}</div>
+            <div class="product" v-show="visCarbs">{{row_data.carbs}}</div>
+            <div class="product" v-show="visProtein">{{row_data.protein}}</div>
+            <div class="product" v-show="visIron">{{row_data.iron}}</div>
         <button class="delete-all">
                 <img :src="`${svgTrash}`" alt="icon_trash"/>
                 delete
@@ -17,6 +17,8 @@
 
 <script>
 import svgTrash from "../../assets/Trash.svg";
+import { mapGetters } from 'vuex'
+
     export default {
         name: 'table-row',
         props:{
@@ -36,11 +38,49 @@ import svgTrash from "../../assets/Trash.svg";
         data() {
             return {
                 svgTrash: svgTrash,
+                visProduct: true,
+                visCalories: true,
+                visFat: true,
+                visCarbs: true,
+                visProtein: true,
+                visIron: true,
             }
         },
         computed:{
-
-        }
+            ...mapGetters(["TITLE_FILTER"]),
+        },
+        watch:{
+            TITLE_FILTER() {
+                this.getVisColumns();
+            }
+        },
+        getVisColumns(){
+            this.TITLE_FILTER.forEach(element => {
+                switch (element.title) {
+                    case "product":
+                        this.visProduct = !this.visProduct;
+                    break;
+                    case "calories":
+                        
+                    break;
+                    case "fat":
+                        
+                    break;
+                    case "carbs":
+                        
+                    break;
+                    case "protein":
+                        
+                    break;
+                    case "iron":
+                        
+                    break;
+                
+                    default:
+                        break;
+                }
+            });
+        }    
     }
 </script>
 
