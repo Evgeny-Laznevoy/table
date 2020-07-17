@@ -27,7 +27,7 @@
 <style lang="scss">
 
     .button {
-        width: auto;
+            width: auto;
             background: #F2F2F2;
             height: 32px;
             font-size: 14px;

@@ -99,7 +99,7 @@
         </div>
       </div>
     </div>
-    <Table2 :products_data="paginatedProducts" />
+    <Table2 :products_data="paginatedProducts" :visProduct="visProduct"/>
     <router-view />
   </div>
 </template>
@@ -141,6 +141,7 @@ export default {
         { name: "15 Per Page", value: 15 },
         { name: "20 Per Page", value: 20 },
       ],
+      visProduct: true,
     };
   },
   computed: {
@@ -170,6 +171,7 @@ export default {
       this.productsPerPage = option;
     },
     selectedColumn(id) {
+      this.visProduct = !this.visProduct;
       this.$store.dispatch('SET_VISIBILITY_COLUMNS', id);
     }
   },
