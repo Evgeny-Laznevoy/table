@@ -112,7 +112,7 @@ import { mapGetters } from 'vuex'
             }
 
             input:checked + label::before {
-                content: "\f00c";
+                content: "\2714";
                 background: #00A11E;
             }
 

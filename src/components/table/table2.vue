@@ -4,8 +4,14 @@
       <thead>
         <tr>
           <th>
-            <div class="th-wrap">
-              <input type="checkbox" />
+            <div class="th-wrap" @click.prevent="deleteAllRow">
+              <!-- <Input :indexRow="``" :checked="checkedAllRows"/> -->
+              <input
+                type="checkbox"
+                :id="`selectedAll`"
+                :checked="checkedAllRows"
+              />
+              <label :for="`selectedAll`"></label>
             </div>
           </th>
           <th
@@ -32,12 +38,23 @@
       <tbody>
         <tr v-for="row in products_data" :key="`row${row.id}`" :row_data="row">
           <td>
-            <div class="td-wrap">
-              <input type="checkbox" />
-            </div>
+            <form class="td-wrap">
+              <!-- <Input
+                :indexRow="row.id"
+                :checked="checkedRow"
+                :id="row.id"
+                @selectedRows="selectedRows"
+              /> -->
+              <input type="checkbox" 
+                     :id="`checkbox-id${row.id}`" 
+                     v-model="rows.selectedRows"
+                     :value="row"
+                     />
+              <label :for="`checkbox-id${row.id}`"></label>
+            </form>
           </td>
           <td v-show="visProduct">
-            <div class="td-wrap">{{ row.product }}</div>
+            <div class="td-wrap td-wrap--font">{{ row.product }}</div>
           </td>
           <td>
             <div class="td-wrap">{{ row.calories }}</div>
@@ -52,24 +69,35 @@
             <div class="td-wrap">{{ row.protein }}</div>
           </td>
           <td>
-              <div class="td-wrap">
-                {{ row.iron }}
-                <div class="delete" 
-                  @click.prevent="openDelPopup(row.id)"
-                  >
-                  <img :src="`${svgTrash}`" alt="icon_trash"/>
-                  delete
-                </div> 
-                <div class="delete__popup" v-show="selectDelElement == row.id && visDelPopup">
-                    <div class="text">
-                        Are you sure you want to delete item?
-                    </div>
-                    <div class="group-button">
-                      <!-- <Button :title_button="cancelTitle" @click.prevent="openDelPopup(row.id)"/> -->
-                      <button class="button" @click.prevent="openDelPopup(row.id)">Cancel</button>
-                      <button class="button button--green" @click.prevent="openDelPopup(row.id)">Confirm</button>
-                    </div>
+            <div class="td-wrap">
+              {{ row.iron }}
+              <div class="delete" @click.prevent="openDelPopup(row.id)">
+                <img :src="`${svgTrash}`" alt="icon_trash" />
+                delete
+              </div>
+              <div
+                class="delete__popup"
+                v-show="selectDelElement == row.id && visDelPopup"
+              >
+                <div class="text">
+                  <p>
+                    Are you sure you want to
+                    <span class="text__font">delete item?</span>
+                  </p>
                 </div>
+                <div class="group-button">
+                  <!-- <Button :title_button="cancelTitle" @click.prevent="openDelPopup(row.id)"/> -->
+                  <button class="button" @click.prevent="openDelPopup(row.id)">
+                    Cancel
+                  </button>
+                  <button
+                    class="button button--green"
+                    @click.prevent="deleteProduct(row.id)"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
             </div>
           </td>
         </tr>
@@ -84,11 +112,13 @@ import svgArrowUp from "../../assets/upArrow.svg";
 import svgArrowDown from "../../assets/downArrow.svg";
 import svgTrash from "../../assets/Trash.svg";
 // import Button from "../panel/button";
+// import Input from "./input";
 
 export default {
   name: "table",
   components: {
     // Button,
+    // Input,
   },
   props: {
     products_data: {
@@ -98,11 +128,11 @@ export default {
       },
     },
     visProduct: {
-        type: Boolean,
-        default: () => {
-            return true
-        }
-    }
+      type: Boolean,
+      default: () => {
+        return true;
+      },
+    },
   },
   data() {
     return {
@@ -116,17 +146,51 @@ export default {
       visDelPopup: false,
       selectDelElement: 0,
       cancelTitle: "Cancel",
+      selectedAllRow: false,
+      rows: {
+        selectedRows: [],
+      },
+      activeInput: false,
+      checkedAllRows: false,
+      checkedRow: false,
     };
   },
   computed: {
     ...mapGetters(["TITLE_FILTER"]),
   },
   methods: {
-    openDelPopup(id){
-      this.selectDelElement = id; 
+    selectedRows(id) {
+      this.rows.selectedRows.push(id);
+      console.log(this.rows.selectedRows);
+    },
+    deleteAllRow() {
+      this.checkedAllRows = !this.checkedAllRows;
+      console.log("выделить все строки на странице!");
+      // this.rows.selectedRows.push(this.products_data);
+      this.rows.selectedRows = this.rows.selectedRows.concat(this.products_data);
+
+      if (!this.checkedAllRows) {
+        this.rows.selectedRows = this.rows.selectedRows.filter((el) => !this.products_data.includes(el));
+      }
+      
+      // this.checkedRow = !this.checkedRow;
+      // this.selectedRows = this.products_data;
+      // console.log(this.selectedRows);
+    },
+    selected() {
+      // this.checkedRows.find();
+      // this.checkedRows.push(id);
+      console.log(this.rows.selectedRows);
+    },
+    deleteProduct(id) {
+      this.visDelPopup = !this.visDelPopup;
+      this.$store.dispatch("DELETE_PRODUCT", id);
+    },
+    openDelPopup(id) {
+      this.selectDelElement = id;
       this.visDelPopup = !this.visDelPopup;
     },
-    closeDelPopup(){
+    closeDelPopup() {
       this.selectDelElement = 0;
       this.visDelPopup = !this.visDelPopup;
     },
@@ -188,6 +252,48 @@ export default {
         line-height: 24px;
         background: #ffffff;
         cursor: pointer;
+
+        input {
+          display: none;
+        }
+
+        input:checked + label::before {
+          content: "\2714";
+          background: #00a11e;
+          color: #ffffff;
+        }
+
+        input:disabled + label:before {
+          background: #eee;
+          color: #aaa;
+        }
+
+        label {
+          color: #000;
+          cursor: default;
+          line-height: 14px;
+          font-weight: normal;
+          // padding: 10px 0;
+          vertical-align: middle;
+          background: #f8f9fa;
+        }
+
+        label::before {
+          content: " ";
+          color: #000;
+          display: inline-block;
+          // margin: 0 30px 0 36px;
+          position: relative;
+          text-align: center;
+          text-indent: 0px;
+          width: 14px;
+          height: 14px;
+          background: #ffffff;
+          border: 1px solid #e3e3e3;
+          border-image: initial;
+          vertical-align: middle;
+        }
+
         .img-Arrow {
           width: 24px;
           height: 24px;
@@ -205,43 +311,49 @@ export default {
 
     tbody {
       border-spacing: 0;
-      
+
       tr {
-          &:nth-child(2n+ 2) {
-                td, .td-wrap {
-                    background: #F8F9FA;
+        cursor: pointer;
+        &:nth-child(2n + 2) {
+          td,
+          .td-wrap {
+            background: #f8f9fa;
 
-                    .delete {
-                      background: #F8F9FA;
-                        img {
-                          background: #F8F9FA;
-                        }
-                    }
-                    
-                }
+            .delete {
+              background: #f8f9fa;
+              img {
+                background: #f8f9fa;
               }
-
-          &:hover {
-                  td, .td-wrap {
-                    // background: rgba(0, 161, 30, 0.07);
-                    background: #d7ffe6;
-
-                    .delete {
-                      visibility: visible;
-                      background: #d7ffe6;
-                        img {
-                          background: #d7ffe6;
-                        }
-                    }
-
-                    &:nth-child(2){
-                        font-weight: 600;
-                  }
-              }   
+            }
           }
-      td {
-        background: #ffffff;
-        padding: 12px 27px 12px 30px;
+        }
+
+        &:hover {
+          td,
+          .td-wrap {
+            // background: rgba(0, 161, 30, 0.07);
+            background: #d7ffe6;
+
+            &--font {
+              font-weight: 600;
+            }
+
+            .delete {
+              visibility: visible;
+              background: #d7ffe6;
+              img {
+                background: #d7ffe6;
+              }
+            }
+
+            &:nth-child(2) {
+              font-weight: 600;
+            }
+          }
+        }
+        td {
+          background: #ffffff;
+          padding: 12px 27px 12px 30px;
           &:first-child {
             padding: 14px 0 14px 37px;
           }
@@ -251,9 +363,9 @@ export default {
               display: flex;
               justify-content: space-between;
               z-index: 1;
-            }  
+            }
           }
-      }
+        }
       }
 
       .td-wrap {
@@ -263,15 +375,56 @@ export default {
         font-style: normal;
         font-weight: normal;
         font-size: 14px;
-        line-height: 24px;
+        // line-height: 24px;
         background: #ffffff;
         // cursor: pointer;
 
+        input {
+          display: none;
+        }
+
+        input:checked + label::before {
+          content: "\2714";
+          background: #00a11e;
+          color: #ffffff;
+        }
+
+        input:disabled + label:before {
+          background: #eee;
+          color: #aaa;
+        }
+
+        label {
+          color: #000;
+          cursor: default;
+          line-height: 14px;
+          font-weight: normal;
+          // padding: 10px 0;
+          vertical-align: middle;
+          background: #f8f9fa;
+        }
+
+        label::before {
+          content: " ";
+          color: #000;
+          display: inline-block;
+          // margin: 0 30px 0 36px;
+          position: relative;
+          text-align: center;
+          text-indent: 0px;
+          width: 14px;
+          height: 14px;
+          background: #ffffff;
+          border: 1px solid #e3e3e3;
+          border-image: initial;
+          vertical-align: middle;
+        }
+
         .delete {
-          visibility:hidden;
+          visibility: hidden;
           background: #ffffff;
           display: flex;
-          color: #5B5E77;
+          color: #5b5e77;
           cursor: pointer;
           // position: relative;
           img {
@@ -281,60 +434,68 @@ export default {
         }
 
         .delete__popup {
-            display: block;
-            position: absolute;
-            // padding: 16px;
-            margin-top: 65px;
-            margin-left: 50px;
-            width: 254px;
-            height: 96px;
-            background: #FFFFFF;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
-            border-radius: 4px;
-            visibility: visible;
-            z-index: 5;
+          display: block;
+          position: absolute;
+          // padding: 16px;
+          margin-top: 65px;
+          margin-left: 50px;
+          width: 254px;
+          height: 96px;
+          background: #ffffff;
+          box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
+          border-radius: 4px;
+          visibility: visible;
+          z-index: 5;
 
-            .text {
-              display: flex;
-              justify-content: center;
-              margin-top: 16px;
-              background: #FFFFFF;
+          .text {
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
+            background: #ffffff;
+            p {
+              background: #ffffff;
             }
-            .group-button {
-              display: flex;
-              margin: 8px 43px 0 43px;
-              justify-content: space-between;
-              background: #FFFFFF;
 
-              .button {
-                width: 78px;
-                background: #FFFFFF;
-                height: 32px;
-                font-size: 14px;
-                border: none;
-                box-sizing: border-box;
-                // padding: 5px;
-                outline: none;
-                color: #000000;
-                margin: 0;
-                cursor: pointer;
-                border: 1px solid #C6CBD4;
-                border-radius: 4px;
+            &__font {
+              background: #ffffff;
+              font-weight: 600;
+            }
+          }
+          .group-button {
+            display: flex;
+            margin: 8px 43px 0 43px;
+            justify-content: space-between;
+            background: #ffffff;
 
-                &--green {
-                  background: #00A11E;
+            .button {
+              width: 78px;
+              background: #ffffff;
+              height: 32px;
+              font-size: 14px;
+              border: none;
+              box-sizing: border-box;
+              // padding: 5px;
+              outline: none;
+              color: #000000;
+              margin: 0;
+              cursor: pointer;
+              border: 1px solid #c6cbd4;
+              border-radius: 4px;
 
-                  &:hover {
-                    background: lighten($color: #00A11E, $amount: 4%);
-                  }
+              &--green {
+                background: #00a11e;
 
-                  &:active {
-                    background: lighten($color: #4dd599, $amount: 6%);
-                  }
+                &:hover {
+                  background: lighten($color: #00a11e, $amount: 4%);
+                }
+
+                &:active {
+                  background: lighten($color: #4dd599, $amount: 6%);
                 }
               }
             }
           }
+        }
       }
     }
   }

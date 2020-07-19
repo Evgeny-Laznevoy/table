@@ -58,6 +58,10 @@ export default new Vuex.Store({
       SET_PRODUCTS_TO_STATE(state, products){
         state.products = products
       },
+      REMOVE_PRODUCT(state, index){
+        console.log(index);
+        state.products = state.products.filter(item => item.id !== index)
+      },
       EDIT_VISIBILITY_COLUMNS(state, payload){
         state.title_filter.find(item => item.name == payload ? item.visibility = !item.visibility : item.visibility)
       },
@@ -173,6 +177,10 @@ export default new Vuex.Store({
     },
     SET_VISIBILITY_COLUMNS({commit}, payload) {
       commit('EDIT_VISIBILITY_COLUMNS', payload)
+    },
+    DELETE_PRODUCT({commit}, payload){
+      console.log(payload);
+      commit('REMOVE_PRODUCT', payload)
     }
   },
   getters:{

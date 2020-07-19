@@ -72,11 +72,13 @@ import TableRow from "../table/table-row";
 import svgTrash from "../../assets/Trash.svg";
 import svgArrowUp from "../../assets/upArrow.svg";
 import svgArrowDown from "../../assets/downArrow.svg";
+import Input from './input'
 
 export default {
   name: "table",
   components: {
     TableRow,
+    Input,
   },
   props: {
     products_data: {
