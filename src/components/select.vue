@@ -38,7 +38,7 @@ import svgDown from '../assets/Down.svg'
         },
         methods: {
             optionSelect(option){
-                this.title = option.name;
+                this.selected = option.name;
                 this.$emit('selectedOptions', option.value);
                 this.visOptions = !this.visOptions;
             }

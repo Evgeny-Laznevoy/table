@@ -19,6 +19,7 @@
           </div>
         </div>
         <div class="navigation">
+          <button class="delete-rows" :class="{active: quantityRowDel && quantityRowDel > 0}" :disabled="quantityRowDel && quantityRowDel == 0">{{`Delete (${this.quantityRowDel})`}}</button>
           <Button :title_button="`Delete ` + `(${1})`" />
           <div class="prepage-dropdown-filters-block">
             <Select
@@ -57,20 +58,35 @@
           </div>
           <div class="column-select">
             <div class="column-dropdown-filters-blok" @click.prevent="visOptionsColumn = !visOptionsColumn">
-              {{ this.pageNumber }} columns selected
+              {{ this.selectedColumns.length }} columns selected
               <img :src="`${svgDown}`" alt="" />
             </div>
             <div class="column-filters" v-show="visOptionsColumn">
               <div class="column-filters__options">
                 <div class="column-filters__option">
-                  <input type="checkbox" />
+                  <input 
+                    type="checkbox" 
+                    :id="`checkboxAllColumn`"
+                    :checked="selectAll"  
+                    @change="selectedAllColumns()" 
+                    />
+                    
+                  <label :for="`checkboxAllColumn`"></label>
                   Select All
                 </div>
                 <div class="column-filters__option"
                   v-for="(item, i) in TITLE_FILTER"
                   :key="`title${i}`"
                 >
-                  <input type="checkbox" @click.prevent="selectedColumn(item.name)"/>
+                  <input 
+                    type="checkbox" 
+                    :id="`checkbox-id${item.id}`" 
+                    v-model="selectedColumns"
+                    :value="item"
+                    @change="selectedColumn"
+                  />
+                  <!-- @click.prevent="selectedColumn(item.name)" -->
+                  <label :for="`checkbox-id${item.id}`"></label>
                   {{item.title}}
                 </div>
                 <!-- <div class="column-filters__option">
@@ -99,7 +115,12 @@
         </div>
       </div>
     </div>
-    <Table2 :products_data="paginatedProducts" :visProduct="visProduct"/>
+    <Table2 
+        :products_data="paginatedProducts" 
+        :visProduct="visProduct" 
+        :pageNumber="this.pageNumber"
+        @quantityRows="quantityRows"
+    />
     <router-view />
   </div>
 </template>
@@ -142,12 +163,16 @@ export default {
         { name: "20 Per Page", value: 20 },
       ],
       visProduct: true,
+      list: 1,
+      quantityRowDel: 0,
+      selectedColumns: [],
+      selectAll: true
     };
   },
   computed: {
     ...mapGetters(["PRODUCTS", "TITLE_FILTER"]),
     pages() {
-      return Math.ceil(this.PRODUCTS.length / 10);
+      return Math.ceil(this.PRODUCTS.length / this.productsPerPage);
     },
     paginatedProducts() {
       let from = (this.pageNumber - 1) * this.productsPerPage;
@@ -157,8 +182,16 @@ export default {
   },
   methods: {
     ...mapActions(["GET_PRODUCTS_FROM_API"]),
+    selectedAllColumns(){
+      this.selectAll = !this.selectAll;
+      console.log(this.selectAll);
+      this.selectAll ? this.selectedColumns = this.TITLE_FILTER : this.selectedColumns = [];
+    },
     paginationRight() {
       this.pageNumber == this.pages ? this.pageNumber : (this.pageNumber += 1);
+    },
+    quantityRows(quantity){
+      this.quantityRowDel = quantity;
     },
     paginationLeft() {
       this.pageNumber > 1 ? (this.pageNumber -= 1) : this.pageNumber;
@@ -170,14 +203,16 @@ export default {
     selectedOptions(option) {
       this.productsPerPage = option;
     },
-    selectedColumn(id) {
-      this.visProduct = !this.visProduct;
-      this.$store.dispatch('SET_VISIBILITY_COLUMNS', id);
+    selectedColumn() {
+      console.log(this.selectedColumns);
+      // this.visProduct = !this.visProduct;
+      // this.$store.dispatch('SET_VISIBILITY_COLUMNS', id);
     }
   },
   mounted() {
     this.GET_PRODUCTS_FROM_API();
     this.getRangeString();
+    this.selectedColumns = this.TITLE_FILTER;
   },
 };
 </script>
@@ -254,6 +289,30 @@ export default {
       display: flex;
       justify-content: flex-end;
 
+      .delete-rows {
+            width: 86px;
+            background: #F2F2F2;
+            height: 32px;
+            font-size: 14px;
+            box-sizing: border-box;
+            // background: #000000;
+            border: 1px solid #C6CBD4;
+            box-sizing: border-box;
+            border-radius: 2px;
+
+            &.active {
+              background: #00A11E;
+              // border-color: none;
+              border: none;
+              color: #ffffff;
+            }
+            // padding: 5px;
+            // outline: none;
+            // border: none;
+            // color: #000000;
+            // margin-left: 4px;
+            // border-radius: 2px;
+      }
       .prepage-dropdown-filters-block {
         //     &__btn {
         //         display: flex;
@@ -358,13 +417,55 @@ export default {
             font-size: 14px;
             line-height: 24px;
             align-items: center;
-
             &:first-child {
               font-weight: 600;
             }
+
             input {
-              margin-right: 13px;
+              display: none;
             }
+
+        //     input {
+        //   display: none;
+        // }
+
+        input:checked + label::before {
+          content: "\2714";
+          background: #00a11e;
+          color: #ffffff;
+        }
+
+        input:disabled + label:before {
+          background: #eee;
+          color: #aaa;
+        }
+
+        label {
+          color: #000;
+          cursor: default;
+          line-height: 14px;
+          font-weight: normal;
+          // padding: 10px 0;
+          vertical-align: middle;
+          background: #f8f9fa;
+          margin-right: 12px;
+        }
+
+        label::before {
+          content: " ";
+          color: #000;
+          display: inline-block;
+          // margin: 0 30px 0 36px;
+          position: relative;
+          text-align: center;
+          text-indent: 0px;
+          width: 14px;
+          height: 14px;
+          background: #ffffff;
+          border: 1px solid #e3e3e3;
+          border-image: initial;
+          vertical-align: middle;
+        }
           }
         }
       }

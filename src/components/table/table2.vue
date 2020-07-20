@@ -4,15 +4,17 @@
       <thead>
         <tr>
           <th>
-            <div class="th-wrap" @click.prevent="deleteAllRow">
+            <form class="th-wrap">
               <!-- <Input :indexRow="``" :checked="checkedAllRows"/> -->
               <input
                 type="checkbox"
-                :id="`selectedAll`"
-                :checked="checkedAllRows"
+                :id="`selectedAll${pageNumber}`"
+                v-model="selectedAllRows"
+                :value="pageNumber"
+                @change="deleteAllRow(pageNumber)"
               />
-              <label :for="`selectedAll`"></label>
-            </div>
+              <label :for="`selectedAll${pageNumber}`"></label>
+            </form>
           </th>
           <th
             v-for="item in TITLE_FILTER"
@@ -47,7 +49,7 @@
               /> -->
               <input type="checkbox" 
                      :id="`checkbox-id${row.id}`" 
-                     v-model="rows.selectedRows"
+                     v-model="selectedRows"
                      :value="row"
                      />
               <label :for="`checkbox-id${row.id}`"></label>
@@ -133,6 +135,12 @@ export default {
         return true;
       },
     },
+    pageNumber: {
+      type: Number,
+      default: () => {
+        return 1;
+      }
+    }
   },
   data() {
     return {
@@ -147,40 +155,51 @@ export default {
       selectDelElement: 0,
       cancelTitle: "Cancel",
       selectedAllRow: false,
-      rows: {
-        selectedRows: [],
-      },
+      selectedRows: [],
+      selectedAllRows: [],
       activeInput: false,
       checkedAllRows: false,
       checkedRow: false,
+      previousPage: 0
     };
   },
   computed: {
     ...mapGetters(["TITLE_FILTER"]),
   },
-  methods: {
-    selectedRows(id) {
-      this.rows.selectedRows.push(id);
-      console.log(this.rows.selectedRows);
-    },
-    deleteAllRow() {
-      this.checkedAllRows = !this.checkedAllRows;
-      console.log("выделить все строки на странице!");
-      // this.rows.selectedRows.push(this.products_data);
-      this.rows.selectedRows = this.rows.selectedRows.concat(this.products_data);
+  watch:{
+    selectedRows: {
+        deep: true,
 
-      if (!this.checkedAllRows) {
-        this.rows.selectedRows = this.rows.selectedRows.filter((el) => !this.products_data.includes(el));
+        handler(){
+          this.$emit('quantityRows', this.selectedRows.length);
+          console.log('The list of colours has changed!');
+        }
       }
+    }, 
+    // page: 'page.selectedAllRows': (){
+    //   console.log('изменения')
+    // }
+    // page: {
+    //   selectedAllRows: console.log('изменения')
+    // }
+  methods: {
+    // selectedRows(id) {
+    //   this.selectedRows.push(id);
+    //   console.log(this.selectedRows);
+    // },
+    deleteAllRow(pageNumber) {
+      let itemPage = this.selectedAllRows.find(item => item == pageNumber);
       
-      // this.checkedRow = !this.checkedRow;
-      // this.selectedRows = this.products_data;
-      // console.log(this.selectedRows);
+      if (itemPage == pageNumber) {
+        this.selectedRows = this.selectedRows.concat(this.products_data); 
+      } else {
+        this.selectedRows = this.selectedRows.filter((el) => !this.products_data.includes(el));
+      }
     },
     selected() {
       // this.checkedRows.find();
       // this.checkedRows.push(id);
-      console.log(this.rows.selectedRows);
+      console.log(this.selectedRows);
     },
     deleteProduct(id) {
       this.visDelPopup = !this.visDelPopup;
@@ -426,6 +445,7 @@ export default {
           display: flex;
           color: #5b5e77;
           cursor: pointer;
+          align-items: center;
           // position: relative;
           img {
             width: 24px;
