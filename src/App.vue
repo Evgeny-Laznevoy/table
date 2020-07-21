@@ -20,30 +20,12 @@
         </div>
         <div class="navigation">
           <button class="delete-rows" :class="{active: quantityRowDel && quantityRowDel > 0}" :disabled="quantityRowDel && quantityRowDel == 0">{{`Delete (${this.quantityRowDel})`}}</button>
-          <Button :title_button="`Delete ` + `(${1})`" />
+          <!-- <Button :title_button="`Delete ` + `(${1})`" /> -->
           <div class="prepage-dropdown-filters-block">
             <Select
               :options="optionsPrePage"
               @selectedOptions="selectedOptions"
             />
-            <!-- <button class="prepage-dropdown-filters-block__btn">
-                {{this.productsPerPage}} Per Page
-                <img :src="`${svgDown}`" alt=""/>
-              </button> -->
-            <!-- <div class="prepage-dropdown-filters-block__popup"> -->
-            <!-- <div class="prepage-type">
-                    <input type="checkbox">
-                    10 Per Page
-                    </div>
-                  <div class="prepage-type">
-                    <input type="checkbox">
-                    15 Per Page
-                  </div>
-                  <div class="prepage-type">
-                    <input type="checkbox">
-                    20 Per Page
-                  </div> -->
-            <!-- </div> -->
           </div>
           <div class="pagination">
             <button class="btn" @click.prevent="paginationLeft()">
@@ -68,9 +50,8 @@
                     type="checkbox" 
                     :id="`checkboxAllColumn`"
                     :checked="selectAll"  
-                    @change="selectedAllColumns()" 
-                    />
-                    
+                    @change="selectedAllColumns(selectAll)" 
+                    />    
                   <label :for="`checkboxAllColumn`"></label>
                   Select All
                 </div>
@@ -80,35 +61,15 @@
                 >
                   <input 
                     type="checkbox" 
-                    :id="`checkbox-id${item.id}`" 
-                    v-model="selectedColumns"
+                    :id="`head-checkbox-id${item.id}`" 
+                    v-model="selectedColumnsAll"
                     :value="item"
-                    @change="selectedColumn"
+                    @change="selectedColumn(item.id)"
                   />
                   <!-- @click.prevent="selectedColumn(item.name)" -->
-                  <label :for="`checkbox-id${item.id}`"></label>
+                  <label :for="`head-checkbox-id${item.id}`"></label>
                   {{item.title}}
                 </div>
-                <!-- <div class="column-filters__option">
-                  <input type="checkbox" />
-                  Select All
-                </div>
-                <div class="column-filters__option">
-                  <input type="checkbox" />
-                  Select All
-                </div>
-                <div class="column-filters__option">
-                  <input type="checkbox" />
-                  Select All
-                </div>
-                <div class="column-filters__option">
-                  <input type="checkbox" />
-                  Select All
-                </div>
-                <div class="column-filters__option">
-                  <input type="checkbox" />
-                  Select All
-                </div> -->
               </div>
             </div>
           </div>
@@ -117,9 +78,9 @@
     </div>
     <Table2 
         :products_data="paginatedProducts" 
-        :visProduct="visProduct" 
         :pageNumber="this.pageNumber"
         @quantityRows="quantityRows"
+        :columns="selectedColumns"
     />
     <router-view />
   </div>
@@ -162,11 +123,12 @@ export default {
         { name: "15 Per Page", value: 15 },
         { name: "20 Per Page", value: 20 },
       ],
-      visProduct: true,
+      // visProduct: true,
       list: 1,
       quantityRowDel: 0,
       selectedColumns: [],
-      selectAll: true
+      selectAll: true,
+      selectedColumnsAll: []
     };
   },
   computed: {
@@ -179,13 +141,33 @@ export default {
       let to = from + this.productsPerPage;
       return this.PRODUCTS.slice(from, to);
     },
+    receiveVisColunms(){
+      return 123
+      //  this.selectedColumns.array.forEach(element => {
+      //   switch (element.name) {
+      //     case value:
+            
+      //       break;
+        
+      //     default:
+      //       break;
+      //   }
+      // });
+    }
   },
   methods: {
     ...mapActions(["GET_PRODUCTS_FROM_API"]),
-    selectedAllColumns(){
+
+    selectedAllColumns(visColumns){
+      visColumns = !visColumns;
       this.selectAll = !this.selectAll;
-      console.log(this.selectAll);
-      this.selectAll ? this.selectedColumns = this.TITLE_FILTER : this.selectedColumns = [];
+      if (!visColumns) {
+        this.selectedColumnsAll = [];
+      } else {
+        this.selectedColumnsAll = this.TITLE_FILTER;
+      }
+      this.$store.dispatch('CHANGE_VISIBILITY_COLUMNS_ALL', visColumns);
+      // this.selectedColumns = this.TITLE_FILTER;
     },
     paginationRight() {
       this.pageNumber == this.pages ? this.pageNumber : (this.pageNumber += 1);
@@ -203,16 +185,16 @@ export default {
     selectedOptions(option) {
       this.productsPerPage = option;
     },
-    selectedColumn() {
-      console.log(this.selectedColumns);
-      // this.visProduct = !this.visProduct;
-      // this.$store.dispatch('SET_VISIBILITY_COLUMNS', id);
+    selectedColumn(column) {
+      this.$store.dispatch('CHANGE_VISIBILITY_COLUMNS', column);
+      this.selectedColumns = this.TITLE_FILTER;
     }
   },
   mounted() {
     this.GET_PRODUCTS_FROM_API();
     this.getRangeString();
     this.selectedColumns = this.TITLE_FILTER;
+    this.selectedColumnsAll = this.TITLE_FILTER;
   },
 };
 </script>
@@ -299,6 +281,7 @@ export default {
             border: 1px solid #C6CBD4;
             box-sizing: border-box;
             border-radius: 2px;
+            margin-right: 12px;
 
             &.active {
               background: #00A11E;

@@ -5,7 +5,6 @@
         <tr>
           <th>
             <form class="th-wrap">
-              <!-- <Input :indexRow="``" :checked="checkedAllRows"/> -->
               <input
                 type="checkbox"
                 :id="`selectedAll${pageNumber}`"
@@ -41,36 +40,31 @@
         <tr v-for="row in products_data" :key="`row${row.id}`" :row_data="row">
           <td>
             <form class="td-wrap">
-              <!-- <Input
-                :indexRow="row.id"
-                :checked="checkedRow"
-                :id="row.id"
-                @selectedRows="selectedRows"
-              /> -->
-              <input type="checkbox" 
-                     :id="`checkbox-id${row.id}`" 
-                     v-model="selectedRows"
-                     :value="row"
-                     />
+              <input
+                type="checkbox"
+                :id="`checkbox-id${row.id}`"
+                v-model="selectedRows"
+                :value="row"
+              />
               <label :for="`checkbox-id${row.id}`"></label>
             </form>
           </td>
-          <td v-show="visProduct">
+          <td v-show="productVis">
             <div class="td-wrap td-wrap--font">{{ row.product }}</div>
           </td>
-          <td>
+          <td v-show="caloriesVis">
             <div class="td-wrap">{{ row.calories }}</div>
           </td>
-          <td>
+          <td v-show="fatVis">
             <div class="td-wrap">{{ row.fat }}</div>
           </td>
-          <td>
+          <td v-show="carbsVis">
             <div class="td-wrap">{{ row.carbs }}</div>
           </td>
-          <td>
+          <td v-show="proteinVis">
             <div class="td-wrap">{{ row.protein }}</div>
           </td>
-          <td>
+          <td v-show="ironVis">
             <div class="td-wrap">
               {{ row.iron }}
               <div class="delete" @click.prevent="openDelPopup(row.id)">
@@ -88,7 +82,6 @@
                   </p>
                 </div>
                 <div class="group-button">
-                  <!-- <Button :title_button="cancelTitle" @click.prevent="openDelPopup(row.id)"/> -->
                   <button class="button" @click.prevent="openDelPopup(row.id)">
                     Cancel
                   </button>
@@ -129,18 +122,18 @@ export default {
         return [];
       },
     },
-    visProduct: {
-      type: Boolean,
-      default: () => {
-        return true;
-      },
-    },
     pageNumber: {
       type: Number,
       default: () => {
         return 1;
-      }
-    }
+      },
+    },
+    columns: {
+      type: Array,
+      default: () => {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -160,46 +153,77 @@ export default {
       activeInput: false,
       checkedAllRows: false,
       checkedRow: false,
-      previousPage: 0
+      previousPage: 0,
+      productVis: false,
+      caloriesVis: false,
+      fatVis: false,
+      carbsVis: false,
+      proteinVis: false,
+      ironVis: false,
+      colum: [],
     };
   },
   computed: {
     ...mapGetters(["TITLE_FILTER"]),
   },
-  watch:{
+  created() {
+    this.getVisColumns();
+  },
+  watch: {
     selectedRows: {
-        deep: true,
+      deep: true,
 
-        handler(){
-          this.$emit('quantityRows', this.selectedRows.length);
-          console.log('The list of colours has changed!');
-        }
-      }
-    }, 
-    // page: 'page.selectedAllRows': (){
-    //   console.log('изменения')
-    // }
-    // page: {
-    //   selectedAllRows: console.log('изменения')
-    // }
+      handler() {
+        this.$emit("quantityRows", this.selectedRows.length);
+      },
+    },
+    columns: {
+      deep: true,
+      handler() {
+        this.getVisColumns();
+        // this.$emit('quantityRows', this.selectedRows.length);
+      },
+    },
+  },
+  // page: 'page.selectedAllRows': (){
+  //   console.log('изменения')
+  // }
+  // page: {
+  //   selectedAllRows: console.log('изменения')
+  // }
   methods: {
     // selectedRows(id) {
     //   this.selectedRows.push(id);
     //   console.log(this.selectedRows);
     // },
-    deleteAllRow(pageNumber) {
-      let itemPage = this.selectedAllRows.find(item => item == pageNumber);
-      
-      if (itemPage == pageNumber) {
-        this.selectedRows = this.selectedRows.concat(this.products_data); 
-      } else {
-        this.selectedRows = this.selectedRows.filter((el) => !this.products_data.includes(el));
-      }
+    getVisColumns() {
+      this.columns.forEach((element) => {
+        if (element.name == "product") {
+          this.productVis = element.visibility;
+        } else if (element.name == "calories") {
+          this.caloriesVis = element.visibility;
+        } else if (element.name == "fat") {
+          this.fatVis = element.visibility;
+        } else if (element.name == "carbs") {
+          this.carbsVis = element.visibility;
+        } else if (element.name == "protein") {
+          this.proteinVis = element.visibility;
+        } else if (element.name == "iron") {
+          this.ironVis = element.visibility;
+        }
+      });
     },
-    selected() {
-      // this.checkedRows.find();
-      // this.checkedRows.push(id);
+    deleteAllRow(pageNumber) {
       console.log(this.selectedRows);
+      let itemPage = this.selectedAllRows.find((item) => item == pageNumber);
+
+      if (itemPage == pageNumber) {
+        this.selectedRows = this.selectedRows.concat(this.products_data);
+      } else {
+        this.selectedRows = this.selectedRows.filter(
+          (el) => !this.products_data.includes(el)
+        );
+      }
     },
     deleteProduct(id) {
       this.visDelPopup = !this.visDelPopup;
