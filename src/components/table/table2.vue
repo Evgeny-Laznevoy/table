@@ -112,8 +112,6 @@ import svgTrash from "../../assets/Trash.svg";
 export default {
   name: "table",
   components: {
-    // Button,
-    // Input,
   },
   props: {
     products_data: {
@@ -174,28 +172,17 @@ export default {
       deep: true,
 
       handler() {
-        this.$emit("quantityRows", this.selectedRows.length);
+        this.$emit("quantityRows", this.selectedRows);
       },
     },
     columns: {
       deep: true,
       handler() {
         this.getVisColumns();
-        // this.$emit('quantityRows', this.selectedRows.length);
       },
     },
   },
-  // page: 'page.selectedAllRows': (){
-  //   console.log('изменения')
-  // }
-  // page: {
-  //   selectedAllRows: console.log('изменения')
-  // }
   methods: {
-    // selectedRows(id) {
-    //   this.selectedRows.push(id);
-    //   console.log(this.selectedRows);
-    // },
     getVisColumns() {
       this.columns.forEach((element) => {
         if (element.name == "product") {
@@ -214,7 +201,6 @@ export default {
       });
     },
     deleteAllRow(pageNumber) {
-      console.log(this.selectedRows);
       let itemPage = this.selectedAllRows.find((item) => item == pageNumber);
 
       if (itemPage == pageNumber) {
@@ -264,7 +250,6 @@ export default {
 
   .table {
     width: 100%;
-    // border-radius: 4px;
     background: #ffffff;
     border-collapse: collapse;
 

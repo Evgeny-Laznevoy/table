@@ -19,8 +19,14 @@
           </div>
         </div>
         <div class="navigation">
-          <button class="delete-rows" :class="{active: quantityRowDel && quantityRowDel > 0}" :disabled="quantityRowDel && quantityRowDel == 0">{{`Delete (${this.quantityRowDel})`}}</button>
-          <!-- <Button :title_button="`Delete ` + `(${1})`" /> -->
+          <button 
+            class="delete-rows" 
+            :class="{active: this.rowsForDelete && this.rowsForDelete.length > 0}" 
+            :disabled="this.rowsForDelete && this.rowsForDelete.length == 0"
+            @click.prevent="deleteSelectedRows"
+            >
+            {{`Delete (${this.rowsForDelete.length})`}}
+          </button>
           <div class="prepage-dropdown-filters-block">
             <Select
               :options="optionsPrePage"
@@ -66,7 +72,6 @@
                     :value="item"
                     @change="selectedColumn(item.id)"
                   />
-                  <!-- @click.prevent="selectedColumn(item.name)" -->
                   <label :for="`head-checkbox-id${item.id}`"></label>
                   {{item.title}}
                 </div>
@@ -88,7 +93,6 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-// import Table from "./components/table/table";
 import Table2 from "./components/table/table2";
 import Button from "./components/panel/button";
 import svgDown from "./assets/Down.svg";
@@ -103,16 +107,12 @@ export default {
     Button,
     Select,
   },
-  // created(){
-  //     this.GET_PRODUCTS_FROM_API();
-  // },
   data() {
     return {
       logo: "Table UI",
       svgRight: svgRight,
       svgLeft: svgLeft,
       svgDown: svgDown,
-      // pagination: "1-10 of 25",
       productsPerPage: 10,
       pageNumber: 1,
       from: 0,
@@ -123,12 +123,11 @@ export default {
         { name: "15 Per Page", value: 15 },
         { name: "20 Per Page", value: 20 },
       ],
-      // visProduct: true,
       list: 1,
-      quantityRowDel: 0,
       selectedColumns: [],
       selectAll: true,
-      selectedColumnsAll: []
+      selectedColumnsAll: [],
+      rowsForDelete: []
     };
   },
   computed: {
@@ -141,23 +140,13 @@ export default {
       let to = from + this.productsPerPage;
       return this.PRODUCTS.slice(from, to);
     },
-    receiveVisColunms(){
-      return 123
-      //  this.selectedColumns.array.forEach(element => {
-      //   switch (element.name) {
-      //     case value:
-            
-      //       break;
-        
-      //     default:
-      //       break;
-      //   }
-      // });
-    }
   },
   methods: {
     ...mapActions(["GET_PRODUCTS_FROM_API"]),
-
+    deleteSelectedRows(){
+      this.$store.dispatch('DELETE_SELECTED_ROWS', this.rowsForDelete);
+      this.rowsForDelete = [];
+    },
     selectedAllColumns(visColumns){
       visColumns = !visColumns;
       this.selectAll = !this.selectAll;
@@ -173,7 +162,7 @@ export default {
       this.pageNumber == this.pages ? this.pageNumber : (this.pageNumber += 1);
     },
     quantityRows(quantity){
-      this.quantityRowDel = quantity;
+      this.rowsForDelete = quantity;
     },
     paginationLeft() {
       this.pageNumber > 1 ? (this.pageNumber -= 1) : this.pageNumber;
@@ -207,16 +196,13 @@ export default {
 }
 
 .body {
-  // margin: 0 auto;
-  // padding: 0;
+  
 }
 
 .app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  // text-align: center;
-  // color: #2c3e50;
 
   max-width: 1200px;
   margin: 0 auto;
@@ -228,11 +214,7 @@ export default {
 .header {
   display: flex;
   flex-direction: column;
-  // font-family: Source Sans Pro;
-  // text-align: left;
-  // justify-content: left;
-  // height: 40px;
-  // width: 112px;
+
   &__logo {
     margin-top: 30px;
     padding-bottom: 15px;

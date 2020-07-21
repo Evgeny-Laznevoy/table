@@ -55,6 +55,11 @@ export default new Vuex.Store({
     sortDirection: "ASC",
   },
   mutations: {
+    REMOVE_SELECTED_PRODUCTS(state, products){
+      state.products = state.products.filter(
+        (el) => !products.includes(el)
+      );
+    },
     SET_VISIBILITY_COLUMNS(state, column){
       state.title_filter.forEach(function(item){
         if (item.id == column) {
@@ -212,6 +217,9 @@ export default new Vuex.Store({
     },
     CHANGE_VISIBILITY_COLUMNS({ commit }, payload){
       commit("SET_VISIBILITY_COLUMNS", payload);
+    },
+    DELETE_SELECTED_ROWS({commit}, payload){
+      commit("REMOVE_SELECTED_PRODUCTS", payload)
     }
   },
   getters: {
