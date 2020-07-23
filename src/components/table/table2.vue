@@ -106,8 +106,6 @@ import { mapGetters } from "vuex";
 import svgArrowUp from "../../assets/upArrow.svg";
 import svgArrowDown from "../../assets/downArrow.svg";
 import svgTrash from "../../assets/Trash.svg";
-// import Button from "../panel/button";
-// import Input from "./input";
 
 export default {
   name: "table",
@@ -301,7 +299,6 @@ export default {
           cursor: default;
           line-height: 14px;
           font-weight: normal;
-          // padding: 10px 0;
           vertical-align: middle;
           background: #f8f9fa;
         }
@@ -310,7 +307,6 @@ export default {
           content: " ";
           color: #000;
           display: inline-block;
-          // margin: 0 30px 0 36px;
           position: relative;
           text-align: center;
           text-indent: 0px;
@@ -332,9 +328,6 @@ export default {
           }
         }
       }
-      // &.checkbox {
-      //     height: auto;
-      // }
     }
 
     tbody {
@@ -359,7 +352,6 @@ export default {
         &:hover {
           td,
           .td-wrap {
-            // background: rgba(0, 161, 30, 0.07);
             background: #d7ffe6;
 
             &--font {
@@ -403,9 +395,7 @@ export default {
         font-style: normal;
         font-weight: normal;
         font-size: 14px;
-        // line-height: 24px;
         background: #ffffff;
-        // cursor: pointer;
 
         input {
           display: none;
@@ -427,7 +417,6 @@ export default {
           cursor: default;
           line-height: 14px;
           font-weight: normal;
-          // padding: 10px 0;
           vertical-align: middle;
           background: #f8f9fa;
         }
@@ -436,7 +425,6 @@ export default {
           content: " ";
           color: #000;
           display: inline-block;
-          // margin: 0 30px 0 36px;
           position: relative;
           text-align: center;
           text-indent: 0px;
@@ -455,7 +443,6 @@ export default {
           color: #5b5e77;
           cursor: pointer;
           align-items: center;
-          // position: relative;
           img {
             width: 24px;
             background: #ffffff;
@@ -465,7 +452,6 @@ export default {
         .delete__popup {
           display: block;
           position: absolute;
-          // padding: 16px;
           margin-top: 65px;
           margin-left: 50px;
           width: 254px;
@@ -511,8 +497,12 @@ export default {
               border: 1px solid #c6cbd4;
               border-radius: 4px;
 
+              &:hover {
+                background: darken($color: #ffffff, $amount: 4%);
+              }
+
               &--green {
-                background: #00a11e;
+                background: lighten($color: #00A11E, $amount: 6%);
 
                 &:hover {
                   background: lighten($color: #00a11e, $amount: 4%);

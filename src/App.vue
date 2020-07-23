@@ -235,7 +235,6 @@ export default {
       align-items: center;
 
       &__title {
-        // font-family: Source Sans Pro;
         font-style: normal;
         font-weight: 600;
         font-size: 14px;
@@ -244,7 +243,7 @@ export default {
       }
 
       &__button {
-        // margin-left: 8px;
+
       }
     }
 
@@ -259,62 +258,25 @@ export default {
             height: 32px;
             font-size: 14px;
             box-sizing: border-box;
-            // background: #000000;
             border: 1px solid #C6CBD4;
             box-sizing: border-box;
             border-radius: 2px;
             margin-right: 12px;
 
             &.active {
-              background: #00A11E;
-              // border-color: none;
+              background: lighten($color: #00A11E, $amount: 6%);
               border: none;
               color: #ffffff;
+
+              &:hover {
+                background: lighten($color: #00a11e, $amount: 4%);
+              }
+
             }
-            // padding: 5px;
-            // outline: none;
-            // border: none;
-            // color: #000000;
-            // margin-left: 4px;
-            // border-radius: 2px;
+
       }
       .prepage-dropdown-filters-block {
-        //     &__btn {
-        //         display: flex;
-        //         position: relative;
-        //         align-items: center;
-        //         width: auto;
-        //         height: 32px;
-        //         border: 1px solid #D5DAE0;
-        //         box-sizing: border-box;
-        //         border-radius: 2px;
-        //         margin-left: 12px;
-        //         padding-left: 12px;
-        //     }
 
-        //     &__popup {
-        //         display: block;
-        //         width: auto;
-        //         background-color: #ffffff;
-        //         position: absolute;
-        //         margin-top: 10px;
-        //         box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.16);
-        //         border-radius: 4px;
-        //         margin-left: 12px;
-        //         padding: 0px 20px 12px 20px;
-        //         font-size: 14px;
-
-        //         .prepage-type {
-        //           margin-top: 12px;
-        //           background-color: #ffffff;
-        //           display: flex;
-        //           align-items: center;
-
-        //           input {
-        //             margin-right: 12px;
-        //           }
-        //         }
-        //     }
       }
 
       .column-select {
@@ -332,9 +294,9 @@ export default {
 
           &:hover {
             img {
-              background: #cecece;
+              background: lighten($color: #cecece, $amount: 8%);
             }
-            background: #cecece;
+            background: lighten($color: #cecece, $amount: 8%);
           }
         }
 
@@ -367,7 +329,6 @@ export default {
             &::-webkit-scrollbar-thumb {
               background: #d5dae0;
               border-radius: 6px;
-              // height: 100px;
             }
           }
 
@@ -376,12 +337,12 @@ export default {
             background: #ffffff;
             margin-top: 16px;
             height: 24px;
-            // padding-left: 17px;
             font-style: normal;
             font-weight: normal;
             font-size: 14px;
             line-height: 24px;
             align-items: center;
+
             &:first-child {
               font-weight: 600;
             }
@@ -389,10 +350,6 @@ export default {
             input {
               display: none;
             }
-
-        //     input {
-        //   display: none;
-        // }
 
         input:checked + label::before {
           content: "\2714";
@@ -410,7 +367,6 @@ export default {
           cursor: default;
           line-height: 14px;
           font-weight: normal;
-          // padding: 10px 0;
           vertical-align: middle;
           background: #f8f9fa;
           margin-right: 12px;
@@ -420,7 +376,6 @@ export default {
           content: " ";
           color: #000;
           display: inline-block;
-          // margin: 0 30px 0 36px;
           position: relative;
           text-align: center;
           text-indent: 0px;
@@ -451,10 +406,11 @@ export default {
           cursor: pointer;
 
           &:hover {
+            background: lighten($color: #cecece, $amount: 8%);
+
             img {
-              background: #cecece;
+              background: lighten($color: #cecece, $amount: 8%);
             }
-            background: #cecece;
           }
         }
 
