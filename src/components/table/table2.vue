@@ -244,7 +244,8 @@ export default {
 
 <style lang="scss" scoped>
 .table-wrapper {
-  max-width: 1200px;
+  // max-width: 1200px;
+  // display: block;
 
   .table {
     width: 100%;

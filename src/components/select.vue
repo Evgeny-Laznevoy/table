@@ -11,7 +11,7 @@
         :key="option.value"
         @click="optionSelect(option)"
       >
-        {{ option.name }}
+        {{ option.text }}
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     optionSelect(option) {
-      this.selected = option.name;
+      this.selected = option.text;
       this.$emit("selectedOptions", option.value);
       this.visOptions = !this.visOptions;
     },
@@ -66,6 +66,14 @@ export default {
 
     img {
       background: lighten($color: #cecece, $amount: 8%);
+    }
+  }
+
+  &:active {
+    background: lighten($color: #cecece, $amount: 6%);
+
+    img {
+      background: lighten($color: #cecece, $amount: 6%);
     }
   }
 
